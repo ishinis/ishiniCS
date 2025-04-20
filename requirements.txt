@@ -11,3 +11,4 @@ plotly
 lightgbm
 catboost
 openai
+xgboost
