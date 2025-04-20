@@ -229,38 +229,39 @@ with st.form("form"):
 
 
 
-        #  Radar Chart (Financial Profile) ---
-        st.subheader("📈 Financial Behavior Profile")
-        feature_scores = {
-            'Debt-to-Income': data["Debt_to_Income_Ratio"],
-            'Credit Utilization': data["Credit_Utilization_Ratio"],
-            'EMI/Income': data["EMI_to_Income_Ratio"],
-            'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,
-            'Credit Age': data["Credit_History_Age_Months"] / 360
-        }
-        radar_df = pd.DataFrame(dict(r=list(feature_scores.values()), theta=list(feature_scores.keys())))
-        fig_radar = px.line_polar(radar_df, r='r', theta='theta', line_close=True, title='📈 Financial Behavior')
-        st.plotly_chart(fig_radar)
+    #  Radar Chart (Financial Profile) ---
+    st.subheader("📈 Financial Behavior Profile")
+    feature_scores = {
+        'Debt-to-Income': data["Debt_to_Income_Ratio"],
+        'Credit Utilization': data["Credit_Utilization_Ratio"],
+        'EMI/Income': data["EMI_to_Income_Ratio"],
+        'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,
+        'Credit Age': data["Credit_History_Age_Months"] / 360
+    }
 
-        # Gauge Confidence Meter ---
-        st.subheader("🎯 Confidence Gauge")
-        score_confidence = probs[final_pred]
-        fig_gauge = go.Figure(go.Indicator(
-            mode = "gauge+number",
-            value = score_confidence * 100,
-            title = {'text': f"Confidence in '{final_label}'"},
-            gauge = {'axis': {'range': [0, 100]}, 'bar': {'color': "green"}}
-        ))
-        st.plotly_chart(fig_gauge)
+    radar_df = pd.DataFrame(dict(r=list(feature_scores.values()), theta=list(feature_scores.keys())))
+    fig_radar = px.line_polar(radar_df, r='r', theta='theta', line_close=True, title='📈 Financial Behavior')
+    st.plotly_chart(fig_radar)
 
-        # Top Feature Importance ---
-        st.subheader("📌 Top Features (XGBoost)")
-        feat_imp = pd.DataFrame({'Feature': X_train.columns, 'Importance': xgb.feature_importances_})
-        feat_imp = feat_imp.sort_values("Importance", ascending=False).head(10)
-        st.bar_chart(feat_imp.set_index("Feature"))
+    # Gauge Confidence Meter ---
+    st.subheader("🎯 Confidence Gauge")
+    score_confidence = probs[final_pred]
+    fig_gauge = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = score_confidence * 100,
+        title = {'text': f"Confidence in '{final_label}'"},
+        gauge = {'axis': {'range': [0, 100]}, 'bar': {'color': "green"}}
+    ))
+    st.plotly_chart(fig_gauge)
 
-        with st.expander("📋 Show Input Feature Summary"):
-            st.dataframe(df_input.T)
+    # Top Feature Importance ---
+    st.subheader("📌 Top Features (XGBoost)")
+    feat_imp = pd.DataFrame({'Feature': X_train.columns, 'Importance': xgb.feature_importances_})
+    feat_imp = feat_imp.sort_values("Importance", ascending=False).head(10)
+    st.bar_chart(feat_imp.set_index("Feature"))
+
+    with st.expander("📋 Show Input Feature Summary"):
+        st.dataframe(df_input.T)
 
 
 st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Ishini</div>", unsafe_allow_html=True)
