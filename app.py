@@ -199,13 +199,13 @@ with st.form("form"):
 
         # Create the bar chart using Plotly Express
         fig = px.bar(probs_df,
-                      x='Credit Category',
-                      y='Confidence (%)',
-                      color='Credit Category',
-                      color_discrete_map=color_map,
-                      category_orders={'Credit Category': category_order},
-                      text='Confidence (%)',  # Display values on top of bars
-                      title='Confidence Levels for Predicted Credit Score')
+                     x='Credit Category',
+                     y='Confidence (%)',
+                     color='Credit Category',
+                     color_discrete_map=color_map,
+                     category_orders={'Credit Category': category_order},
+                     text='Confidence (%)',  # Display values on top of bars
+                     title='Confidence Levels for Predicted Credit Score')
 
         # Update layout for better aesthetics
         fig.update_layout(
@@ -225,53 +225,17 @@ with st.form("form"):
 
         #  Radar Chart (Financial Profile) ---
         st.subheader("📈 Financial Behavior Profile")
-
-        # Feature scores with interpretations
         feature_scores = {
             'Debt-to-Income': data["Debt_to_Income_Ratio"],
             'Credit Utilization': data["Credit_Utilization_Ratio"],
             'EMI/Income': data["EMI_to_Income_Ratio"],
-            'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,  # Normalized to max 20
-            'Credit Age': data["Credit_History_Age_Months"] / 360  # Normalized to 30 years
+            'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,
+            'Credit Age': data["Credit_History_Age_Months"] / 360
         }
 
         radar_df = pd.DataFrame(dict(r=list(feature_scores.values()), theta=list(feature_scores.keys())))
-
-        fig_radar = px.line_polar(radar_df, r='r', theta='theta', line_close=True, title='Financial Behavior Profile') # Removed redundant title
-
-        # Add tooltips with original values and interpretations
-        fig_radar.update_traces(
-            hovertemplate="""
-                <b>%{theta}</b>: %{r}<br>
-                %{customdata}
-            """,
-            customdata=[
-                "Lower is generally better.",  # Debt-to-Income
-                "Lower is generally better.",  # Credit Utilization
-                "Lower is generally better.",  # EMI/Income
-                "Fewer is better. (Normalized)",  # Delayed Payments
-                "Longer is generally better. (Normalized)",  # Credit Age
-            ]
-        )
-
-        fig_radar.update_layout(
-            polar=dict(
-                radialaxis=dict(showticklabels=True, ticks='', gridcolor='lightgray'),
-                angularaxis=dict(gridcolor='lightgray')
-            ),
-            showlegend=False
-        )
-
+        fig_radar = px.line_polar(radar_df, r='r', theta='theta', line_close=True, title='📈 Financial Behavior')
         st.plotly_chart(fig_radar)
-
-        # Interpretation Guidance
-        st.write("---")
-        st.write("### Interpretation Guidance:")
-        st.write("- **Debt-to-Income:** Lower is generally better, indicating a manageable debt load relative to income.")
-        st.write("- **Credit Utilization:** Lower is generally better, showing responsible credit usage.")
-        st.write("- **EMI/Income:** Lower is generally better, suggesting a manageable monthly expense burden.")
-        st.write("- **Delayed Payments:** Fewer is better. The value shown is normalized.")
-        st.write("- **Credit Age:** Longer is generally better, reflecting a longer credit history.")
 
         # Gauge Confidence Meter ---
         st.subheader("🎯 Confidence Gauge")
