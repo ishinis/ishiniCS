@@ -150,9 +150,9 @@ with st.form("form"):
         final_pred = stack.predict(meta_input)[0]
         final_label = le.inverse_transform([final_pred])[0]
 
-        st.success(f"🎯 Final Predicted Credit Score: **{final_label}**")
-
         st.subheader("Credit Score Prediction Results")
+
+        st.success(f"🎯 Final Predicted Credit Score: **{final_label}**")
 
         # Expandable Section for Explanation
         with st.expander("About this prediction"):
