@@ -1,0 +1,13 @@
+streamlit
+pandas
+numpy
+joblib
+torch
+pytorch-tabnet
+scikit-learn
+matplotlib
+seaborn
+plotly
+lightgbm
+catboost
+openai
