@@ -154,7 +154,7 @@ with st.form("form"):
 
         st.subheader("Credit Score Prediction Results")
 
-        st.success(f"🎯 Final Predicted Credit Score: **{final_label_example}**")  # Replace with your variable
+        st.success(f"🎯 Final Predicted Credit Score: **{final_label}**")  # Replace with your variable
 
         # Expandable Section for Explanation
         with st.expander("About this prediction"):
