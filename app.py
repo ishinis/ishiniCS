@@ -182,7 +182,7 @@ with st.form("form"):
             label = le.inverse_transform([pred])[0]
             color = "green" if label == "Good" else "red" if label == "Poor" else "orange"
             cols[i].markdown(f"**{model_name}**: <span style='color:{color};'>{label}</span>", unsafe_allow_html=True)
-            
+
         st.subheader("📊 Confidence Levels from Stacking Model")
         probs = stack.predict_proba(meta_input)[0]
         prob_dict = {le.classes_[i]: probs[i] for i in range(len(probs))}
