@@ -1,0 +1,200 @@
+﻿# Streamlit Credit Scoring App (Advanced, Enhanced with Full Inputs & Visualizations)
+import streamlit as st
+import pandas as pd
+import numpy as np
+import joblib
+import torch
+from pytorch_tabnet.tab_model import TabNetClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+import lightgbm
+import catboost
+
+# --- UI Setup ---
+st.set_page_config(page_title="Credit Scoring App", layout="wide")
+st.markdown("""
+    <style>
+    .stApp {  }
+    .header { text-align: center; padding: 2rem 0; }
+    .footer { text-align: center; font-size: small; color: #888; margin-top: 3rem; }
+    .stButton > button { color: white; background-color: #1f77b4; border-radius: 8px; }
+    .stButton > button:hover { background-color: #2980b9; }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- Authentication ---
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if not st.session_state.logged_in:
+    st.title("🔐 Login")
+    user = st.text_input("Username")
+    pwd = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if user == "admin" and pwd == "password":
+            st.session_state.logged_in = True
+            st.success("Login successful")
+            st.rerun()
+        else:
+            st.error("Invalid credentials")
+    st.stop()
+
+# --- Logout ---
+st.sidebar.success("Logged in as Admin")
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.logged_in = False
+    st.rerun()
+
+# --- Load Models ---
+scaler = joblib.load("scaler.pkl")
+le = joblib.load("label_encoder.pkl")
+xgb = joblib.load("base_xgb_model.pkl")
+lgbm = joblib.load("base_lgbm_model.pkl")
+catb = joblib.load("base_catboost_model.pkl")
+stack = joblib.load("stacking_meta_model.pkl")
+tabnet = TabNetClassifier()
+tabnet.load_model("tabnet_model.zip")
+
+X_train = pd.read_csv("X_train.csv")
+expected_columns = X_train.columns.tolist()
+
+st.markdown("<div class='header'><h1>💳 Credit Score Predictor</h1> <p>This intelligent system helps you predict an individual's credit score using an ensemble of powerful machine learning models. It takes into account detailed financial behavior, credit history, and spending patterns to classify creditworthiness as Good, Standard, or Poor.</p><p>The app uses models like <b>XGBoost</b>, <b>LightGBM</b>, <b>CatBoost</b>, <b>TabNet</b>, and a <b>Logistic Regression Stacking Ensemble</b> for final prediction, offering confidence scores and interpretability visualizations.</p><p>Enter customer profile data below</p></div>", unsafe_allow_html=True)
+
+with st.form("form"):
+    st.subheader("🔍 Basic Information")
+    col1, col2 = st.columns(2)
+    with col1:
+        age = st.slider("Age", 18, 75, 30)
+        annual_income = st.number_input("Annual Income (LKR)", 50000, 5000000, 1200000)
+        salary = st.number_input("Monthly Inhand Salary", 10000, 1000000, 80000)
+        num_accounts = st.slider("Bank Accounts", 0, 15, 3)
+        credit_years = st.slider("Credit History (Years)", 0, 30, 5)
+    with col2:
+        num_loans = st.slider("Number of Loans", 0, 10, 2)
+        num_cards = st.slider("Number of Credit Cards", 0, 10, 3)
+        num_delays = st.slider("Number of Delayed Payments", 0, 20, 2)
+        delay_days = st.slider("Avg Delay From Due Date (Days)", 0, 100, 5)
+        num_inquiries = st.slider("Credit Inquiries This Year", 0, 15, 2)
+
+    st.subheader("💳 Financial Details")
+    col3, col4 = st.columns(2)
+    with col3:
+        total_emi = st.number_input("Total EMI per Month", 0, 1000000, 30000)
+        outstanding_debt = st.number_input("Outstanding Debt", 0, 10000000, 500000)
+        interest_rate = st.slider("Interest Rate (%)", 0.0, 50.0, 13.5)
+        monthly_balance = st.number_input("Monthly Balance After Bills", 0, 500000, 20000)
+        changed_credit_limit = st.radio("Has Credit Limit Changed Recently?", ["Yes", "No"])
+    with col4:
+        payment_behaviour = st.selectbox("Payment Behaviour", [
+            "Low_spent_Small_value_payments",
+            "High_spent_Medium_value_payments",
+            "Other"])
+        min_amt_paid = st.radio("Paid Minimum Amount?", ["Yes", "No"])
+        credit_mix = st.selectbox("Credit Mix Quality", ["Good", "Standard", "Bad"])
+
+    submitted = st.form_submit_button("🔍 Predict")
+
+    if submitted:
+        data = {
+            "Age": age,
+            "Annual_Income": annual_income,
+            "Monthly_Inhand_Salary": salary,
+            "Num_Bank_Accounts": num_accounts,
+            "Credit_History_Age_Months": credit_years * 12,
+            "Num_of_Loan": num_loans,
+            "Num_Credit_Card": num_cards,
+            "Num_of_Delayed_Payment": num_delays,
+            "Delay_from_due_date": delay_days,
+            "Num_Credit_Inquiries": num_inquiries,
+            "Total_EMI_per_month": total_emi,
+            "Outstanding_Debt": outstanding_debt,
+            "Interest_Rate": interest_rate,
+            "Monthly_Balance": monthly_balance,
+            "Changed_Credit_Limit": 1 if changed_credit_limit == "Yes" else 0,
+            "Payment_of_Min_Amount_Yes": int(min_amt_paid == "Yes"),
+            "Payment_of_Min_Amount_No": int(min_amt_paid == "No"),
+            "Payment_Behaviour_Low_spent_Small_value_payments": int(payment_behaviour == "Low_spent_Small_value_payments"),
+            "Payment_Behaviour_High_spent_Medium_value_payments": int(payment_behaviour == "High_spent_Medium_value_payments"),
+            "Credit_Mix_encoded": {"Good": 2, "Standard": 1, "Bad": 0}[credit_mix],
+            "Age_Group_encoded": 1 if age < 30 else (2 if age < 50 else 3),
+            "Credit_History_Years_Group_encoded": 1 if credit_years < 5 else (2 if credit_years < 15 else 3),
+        }
+
+        # Derived ratios
+        data["Debt_to_Income_Ratio"] = round(outstanding_debt / annual_income, 3) if annual_income > 0 else 0
+        data["Credit_Utilization_Ratio"] = round(outstanding_debt / (salary * 6), 3) if salary > 0 else 0
+        data["EMI_to_Income_Ratio"] = round(total_emi / salary, 3) if salary > 0 else 0
+        data["Amount_invested_monthly"] = round(salary * 0.2)
+        data["Investment_to_Income_Ratio"] = round((salary * 0.2) / salary, 2)
+        data["Utilization_Credit_Mix"] = round(data["Credit_Utilization_Ratio"] * data["Credit_Mix_encoded"], 2)
+        data["Delayed_Payment_Credit_Mix"] = round(num_delays * data["Credit_Mix_encoded"], 2)
+
+        df_input = pd.DataFrame([data])
+        for col in expected_columns:
+            if col not in df_input.columns:
+                df_input[col] = 0
+        df_input = df_input[expected_columns]
+
+        X_scaled = scaler.transform(df_input)
+
+        model_preds = {
+            'XGBoost': int(xgb.predict(X_scaled)[0]),
+            'LightGBM': int(lgbm.predict(X_scaled)[0]),
+            'CatBoost': int(catb.predict(X_scaled)[0]),
+            'TabNet': int(tabnet.predict(X_scaled)[0])
+        }
+
+        meta_input = np.array([[model_preds[m] for m in model_preds]])
+        final_pred = stack.predict(meta_input)[0]
+        final_label = le.inverse_transform([final_pred])[0]
+
+        st.success(f"🎯 Final Predicted Credit Score: **{final_label}**")
+
+        st.subheader("🔎 Individual Model Predictions")
+        cols = st.columns(len(model_preds))
+        for i, (model_name, pred) in enumerate(model_preds.items()):
+            label = le.inverse_transform([pred])[0]
+            cols[i].metric(label=model_name, value=label)
+
+        st.subheader("📊 Confidence Levels from Stacking Model")
+        probs = stack.predict_proba(meta_input)[0]
+        prob_dict = {le.classes_[i]: probs[i] for i in range(len(probs))}
+        st.bar_chart(pd.DataFrame(prob_dict, index=['Confidence (%)']).T * 100)
+
+        #  Radar Chart (Financial Profile) ---
+        st.subheader("📈 Financial Behavior Profile")
+        feature_scores = {
+            'Debt-to-Income': data["Debt_to_Income_Ratio"],
+            'Credit Utilization': data["Credit_Utilization_Ratio"],
+            'EMI/Income': data["EMI_to_Income_Ratio"],
+            'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,
+            'Credit Age': data["Credit_History_Age_Months"] / 360
+        }
+        radar_df = pd.DataFrame(dict(r=list(feature_scores.values()), theta=list(feature_scores.keys())))
+        fig_radar = px.line_polar(radar_df, r='r', theta='theta', line_close=True, title='📈 Financial Behavior')
+        st.plotly_chart(fig_radar)
+
+        # Gauge Confidence Meter ---
+        st.subheader("🎯 Confidence Gauge")
+        score_confidence = probs[final_pred]
+        fig_gauge = go.Figure(go.Indicator(
+            mode = "gauge+number",
+            value = score_confidence * 100,
+            title = {'text': f"Confidence in '{final_label}'"},
+            gauge = {'axis': {'range': [0, 100]}, 'bar': {'color': "green"}}
+        ))
+        st.plotly_chart(fig_gauge)
+
+        # Top Feature Importance ---
+        st.subheader("📌 Top Features (XGBoost)")
+        feat_imp = pd.DataFrame({'Feature': X_train.columns, 'Importance': xgb.feature_importances_})
+        feat_imp = feat_imp.sort_values("Importance", ascending=False).head(10)
+        st.bar_chart(feat_imp.set_index("Feature"))
+
+        with st.expander("📋 Show Input Feature Summary"):
+            st.dataframe(df_input.T)
+
+
+st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Ishini</div>", unsafe_allow_html=True)
