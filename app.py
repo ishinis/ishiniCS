@@ -69,13 +69,13 @@ with st.form("form"):
         age = st.slider("Age", 18, 75, 30)
         annual_income = st.number_input("Annual Income (LKR)", 50000, 5000000, 1200000)
         salary = st.number_input("Monthly Inhand Salary", 10000, 1000000, 80000)
-        num_accounts = st.slider("Bank Accounts", 0, 15, 3)
+        num_accounts = st.number_input("Bank Accounts", min_value=0, max_value=15, value=3)
         credit_years = st.slider("Credit History (Years)", 0, 30, 5)
     with col2:
         num_loans = st.slider("Number of Active Loans", 0, 10, 2)
         num_cards = st.slider("Number of Credit Cards", 0, 10, 3)
         num_delays = st.slider("Number of Delayed Payments", 0, 20, 2)
-        delay_days = st.slider("Avg Delay From Due Date (Days)", 0, 100, 5)
+        delay_days = st.number_input("Avg Delay From Due Date (Days)", min_value=0, max_value=100, value=5)
         num_inquiries = st.slider("Credit Inquiries This Year", 0, 15, 2)
 
     st.subheader("💳 Financial Details")
