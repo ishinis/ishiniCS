@@ -167,28 +167,17 @@ with st.form("form"):
                 """
             )
 
+
         st.subheader("🔎 Individual Model Predictions")
-        cols = st.columns(len(model_preds_example))  # Replace with your variable
-        for i, (model_name, pred) in enumerate(model_preds_example.items()):  # Replace with your variable
-            label = pred  # Assuming 'pred' is already the label
+        cols = st.columns(len(model_preds))
+        for i, (model_name, pred) in enumerate(model_preds.items()):
+            label = le.inverse_transform([pred])[0]
             cols[i].metric(label=model_name, value=label)
 
         st.subheader("📊 Confidence Levels from Stacking Model")
-        probs_df = pd.DataFrame(prob_dict_example, index=['Confidence (%)']).T * 100  # Replace with your variable
-        probs_df.index.name = "Credit Category"
-        probs_df = probs_df.sort_values(by='Confidence (%)', ascending=False)
-
-
-        # st.subheader("🔎 Individual Model Predictions")
-        # cols = st.columns(len(model_preds))
-        # for i, (model_name, pred) in enumerate(model_preds.items()):
-        #     label = le.inverse_transform([pred])[0]
-        #     cols[i].metric(label=model_name, value=label)
-
-        # st.subheader("📊 Confidence Levels from Stacking Model")
-        # probs = stack.predict_proba(meta_input)[0]
-        # prob_dict = {le.classes_[i]: probs[i] for i in range(len(probs))}
-        # st.bar_chart(pd.DataFrame(prob_dict, index=['Confidence (%)']).T * 100)
+        probs = stack.predict_proba(meta_input)[0]
+        prob_dict = {le.classes_[i]: probs[i] for i in range(len(probs))}
+        st.bar_chart(pd.DataFrame(prob_dict, index=['Confidence (%)']).T * 100)
 
 
 
