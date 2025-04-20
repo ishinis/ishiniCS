@@ -84,7 +84,7 @@ with st.form("form"):
         total_emi = st.number_input("Total EMI per Month", 0, 1000000, 30000)
         outstanding_debt = st.number_input("Outstanding Debt", 0, 10000000, 500000)
         interest_rate = st.slider("Percentage Average Interest Rate of Active Loans (%)", 0.0, 50.0, 13.5)
-        monthly_balance = st.number_input("Monthly Balance After Bills", 0, 500000, 20000)
+        monthly_balance = st.number_input("Monthly Balance After Expenses", 0, 500000, 20000)
         changed_credit_limit = st.radio("Has Credit Limit Changed Recently?", ["Yes", "No"])
     with col4:
         payment_behaviour = st.selectbox("Payment Behaviour", [
