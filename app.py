@@ -162,7 +162,8 @@ with st.form("form"):
             color = "orange"
         return f'<span style="color:{color}; font-weight: bold;">{label}</span>'
 
-    st.success(f"🎯 Final Predicted Credit Score: {color_credit_score(final_label)}", unsafe_allow_html=True)
+    # st.success(f"🎯 Final Predicted Credit Score: {color_credit_score(final_label)}", unsafe_allow_html=True)
+    st.markdown(f"🎯 Final Predicted Credit Score: {color_credit_score(final_label)}", unsafe_allow_html=True)
 
     # Expandable Section for Explanation
     with st.expander("About this prediction"):
@@ -180,7 +181,8 @@ with st.form("form"):
     for i, (model_name, pred) in enumerate(model_preds.items()):
         label = le.inverse_transform([pred])[0]
         color = "green" if label == "Good" else "red" if label == "Poor" else "orange"
-        cols[i].metric(label=model_name, value=f'<span style="color:{color};">{label}</span>')
+        # cols[i].metric(label=model_name, value=f'<span style="color:{color};">{label}</span>')
+        cols[i].metric(label=model_name, value=f'<span style="color:{color};">{label}</span>', unsafe_allow_html=True)
 
     st.subheader("📊 Confidence Levels from Stacking Model")
     probs = stack.predict_proba(meta_input)[0]
