@@ -72,7 +72,7 @@ with st.form("form"):
         num_accounts = st.slider("Bank Accounts", 0, 15, 3)
         credit_years = st.slider("Credit History (Years)", 0, 30, 5)
     with col2:
-        num_loans = st.slider("Number of Loans", 0, 10, 2)
+        num_loans = st.slider("Number of Active Loans", 0, 10, 2)
         num_cards = st.slider("Number of Credit Cards", 0, 10, 3)
         num_delays = st.slider("Number of Delayed Payments", 0, 20, 2)
         delay_days = st.slider("Avg Delay From Due Date (Days)", 0, 100, 5)
@@ -83,7 +83,7 @@ with st.form("form"):
     with col3:
         total_emi = st.number_input("Total EMI per Month", 0, 1000000, 30000)
         outstanding_debt = st.number_input("Outstanding Debt", 0, 10000000, 500000)
-        interest_rate = st.slider("Interest Rate (%)", 0.0, 50.0, 13.5)
+        interest_rate = st.slider("Percentage Average Interest Rate of Active Loans (%)", 0.0, 50.0, 13.5)
         monthly_balance = st.number_input("Monthly Balance After Bills", 0, 500000, 20000)
         changed_credit_limit = st.radio("Has Credit Limit Changed Recently?", ["Yes", "No"])
     with col4:
