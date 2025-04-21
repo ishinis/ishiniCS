@@ -279,13 +279,13 @@ with st.form("form"):
         # Determine gauge color and confidence message
         if score_confidence > 70:
             gauge_color = "green"
-            confidence_text = "High Confidence: The model is quite certain about this prediction."
+            confidence_text = "High Confidence: The model is highly certain this individual's credit score is 'Standard'."
         elif score_confidence > 40:
             gauge_color = "orange"
-            confidence_text = "Moderate Confidence: The model has a reasonable level of certainty."
+            confidence_text = "Moderate Confidence: The model has a reasonable level of certainty that this individual's credit score is 'Standard'."
         else:
             gauge_color = "red"
-            confidence_text = "Low Confidence: The model's prediction has lower certainty."
+            confidence_text = "Low Confidence: The model has lower certainty in this 'Standard' credit score prediction. Reviewing the input data might be helpful."
 
         # Create the gauge chart
         fig_gauge = go.Figure(go.Indicator(
@@ -310,6 +310,7 @@ with st.form("form"):
 
         # Top Feature Importance ---
         st.subheader("📌 Top Features (XGBoost)")
+        st.write("This chart shows the top 10 features that the XGBoost model deemed most influential in predicting the credit score. Higher bars indicate greater importance.")
         feat_imp = pd.DataFrame({'Feature': X_train.columns, 'Importance': xgb.feature_importances_})
         feat_imp = feat_imp.sort_values("Importance", ascending=False).head(10)
         st.bar_chart(feat_imp.set_index("Feature"))
@@ -317,4 +318,4 @@ with st.form("form"):
         with st.expander("📋 Show Input Feature Summary"):
             st.dataframe(df_input.T)
 
-st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Ishini</div>", unsafe_allow_html=True)
+st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Hewa</div>", unsafe_allow_html=True)
