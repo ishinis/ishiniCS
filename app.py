@@ -307,6 +307,43 @@ with st.form("form"):
         st.plotly_chart(fig_gauge)
         st.markdown(f"**Interpretation:** {confidence_text}")
 
+        # 💡 Recommendations for Improvement
+        if final_label != "Good":
+        st.subheader("💡 Recommendations to Improve Credit Score")
+
+        recs = []
+
+        # Based on high debt-to-income ratio
+        if data["Debt_to_Income_Ratio"] > 0.4:
+            recs.append("• Try reducing your overall debt. A high debt-to-income ratio can negatively impact your creditworthiness.")
+
+        # Based on credit utilization
+        if data["Credit_Utilization_Ratio"] > 0.3:
+            recs.append("• Lower your credit utilization. Keeping it below 30% is ideal for a better credit score.")
+
+        # Based on delayed payments
+        if data["Num_of_Delayed_Payment"] >= 3:
+            recs.append("• Reduce delayed payments. Regular on-time payments build a positive credit history.")
+
+        # Based on EMI to income ratio
+        if data["EMI_to_Income_Ratio"] > 0.5:
+            recs.append("• Your EMI commitments are high. Try consolidating or refinancing to lower the monthly burden.")
+
+        # Based on short credit history
+        if data["Credit_History_Age_Months"] < 24:
+            recs.append("• Build a longer credit history. Maintaining older accounts can help over time.")
+
+        # Based on credit mix
+        if data["Credit_Mix_encoded"] < 2:
+            recs.append("• Diversify your credit mix. A healthy mix of loans and credit cards is seen favorably.")
+
+        if recs:
+            for r in recs:
+                st.markdown(r)
+        else:
+            st.markdown("No major red flags were found, but consistently making timely payments and managing your credit wisely will help.")
+
+
 
         # Top Feature Importance ---
         st.subheader("📌 Top Features (XGBoost)")
