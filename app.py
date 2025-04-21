@@ -88,10 +88,17 @@ with st.form("form"):
         monthly_balance = st.number_input("Monthly Balance After Expenses", 0, 500000, 20000)
         changed_credit_limit = st.radio("Has Credit Limit Changed Recently?", ["Yes", "No"])
     with col4:
-        payment_behaviour = st.selectbox("Payment Behaviour", [
-            "Low_spent_Small_value_payments",
-            "High_spent_Medium_value_payments",
-            "Other"])
+        payment_options = {
+            "Low spend, small value payments": "Low_spent_Small_value_payments",
+            "High spend, medium value payments": "High_spent_Medium_value_payments",
+            "Other": "Other"
+        }
+
+        payment_label = st.selectbox(
+            "How would you best describe your typical spending and payment habits?",
+            list(payment_options.keys())
+        )
+        payment_behaviour = payment_options[payment_label]
         min_amt_paid = st.radio("Paid Minimum Amount?", ["Yes", "No"])
         credit_mix = st.selectbox("Credit Mix Quality", ["Good", "Standard", "Bad"])
 
