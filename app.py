@@ -56,9 +56,9 @@ def load_models():
     tabnet.load_model("tabnet_model.zip")
     X_train = pd.read_csv("X_train.csv")
     expected_columns = X_train.columns.tolist()
-    return scaler, le, xgb, lgbm, catb, stack, tabnet, expected_columns
+    return scaler, le, xgb, lgbm, catb, stack, tabnet, expected_columns, X_train
 
-scaler, le, xgb, lgbm, catb, stack, tabnet, expected_columns = load_models()
+scaler, le, xgb, lgbm, catb, stack, tabnet, expected_columns, X_train = load_models()
 
 
 st.markdown("<div class='header'><h1>💳 Credit Score Predictor</h1> <p>This intelligent system helps you predict an individual's credit score using an ensemble of powerful machine learning models. It takes into account detailed financial behavior, credit history, and spending patterns to classify creditworthiness as Good, Standard, or Poor.</p><p>The app uses models like <b>XGBoost</b>, <b>LightGBM</b>, <b>CatBoost</b>, <b>TabNet</b>, and a <b>Logistic Regression Stacking Ensemble</b> for final prediction, offering confidence scores and interpretability visualizations.</p><p><b style='font-size: 1.2em;'>Enter customer profile data below</b></p></div>", unsafe_allow_html=True)
