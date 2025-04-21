@@ -270,16 +270,43 @@ with st.form("form"):
         st.plotly_chart(fig_radar)
 
 
-        # Gauge Confidence Meter ---
+        # 🎯 Gauge Confidence Meter
         st.subheader("🎯 Confidence Gauge")
-        score_confidence = probs[final_pred]
+
+        # Get confidence score as percentage
+        score_confidence = probs[final_pred] * 100
+
+        # Determine gauge color and confidence message
+        if score_confidence > 70:
+            gauge_color = "green"
+            confidence_text = "High Confidence: The model is quite certain about this prediction."
+        elif score_confidence > 40:
+            gauge_color = "orange"
+            confidence_text = "Moderate Confidence: The model has a reasonable level of certainty."
+        else:
+            gauge_color = "red"
+            confidence_text = "Low Confidence: The model's prediction has lower certainty."
+
+        # Create the gauge chart
         fig_gauge = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=score_confidence * 100,
+            value=score_confidence,
             title={'text': f"Confidence in '{final_label}'"},
-            gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "green"}}
+            gauge={
+                'axis': {'range': [0, 100]},
+                'bar': {'color': gauge_color},
+                'steps': [
+                    {'range': [0, 40], 'color': '#ffcccc'},
+                    {'range': [40, 70], 'color': '#fff4cc'},
+                    {'range': [70, 100], 'color': '#ccffcc'}
+                ]
+            }
         ))
+
+        # Display chart and interpretation
         st.plotly_chart(fig_gauge)
+        st.markdown(f"**Interpretation:** {confidence_text}")
+
 
         # Top Feature Importance ---
         st.subheader("📌 Top Features (XGBoost)")
