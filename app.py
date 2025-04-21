@@ -223,19 +223,52 @@ with st.form("form"):
         # Display the chart in Streamlit
         st.plotly_chart(fig)
 
-        #  Radar Chart (Financial Profile) ---
+        # 📈 Radar Chart (Financial Profile)
         st.subheader("📈 Financial Behavior Profile")
+        st.write(
+        "This chart visualizes key financial ratios and behaviors that influence creditworthiness. "
+        "Hover over each axis point to understand what each metric means."
+        )
+
+        # Define financial behavior scores
         feature_scores = {
-            'Debt-to-Income': data["Debt_to_Income_Ratio"],
-            'Credit Utilization': data["Credit_Utilization_Ratio"],
-            'EMI/Income': data["EMI_to_Income_Ratio"],
-            'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,
-            'Credit Age': data["Credit_History_Age_Months"] / 360
+        'Debt-to-Income': data["Debt_to_Income_Ratio"],
+        'Credit Utilization': data["Credit_Utilization_Ratio"],
+        'EMI/Income': data["EMI_to_Income_Ratio"],
+        'Delayed Payments': data["Num_of_Delayed_Payment"] / 20,  # Normalized
+        'Credit Age': data["Credit_History_Age_Months"] / 360     # Normalized
         }
 
-        radar_df = pd.DataFrame(dict(r=list(feature_scores.values()), theta=list(feature_scores.keys())))
-        fig_radar = px.line_polar(radar_df, r='r', theta='theta', line_close=True, title='📈 Financial Behavior')
+        # Create radar chart dataframe
+        radar_df = pd.DataFrame(dict(
+            r=list(feature_scores.values()),
+            theta=list(feature_scores.keys())
+        ))
+
+        # Generate radar chart
+        fig_radar = px.line_polar(
+            radar_df,
+            r='r',
+            theta='theta',
+            line_close=True,
+            title='📊 Financial Behavior'
+        )
+
+        # Update chart with descriptive tooltips
+        fig_radar.update_traces(
+            hovertemplate="<b>%{theta}</b>: %{r}<br>%{customdata}",
+            customdata=[
+                "Higher values indicate more debt relative to income (potential concern).",
+                "Higher values mean you're using more of your available credit (can affect score).",
+                "Shows how much of your income goes to EMIs (higher might be riskier).",
+                "Normalized count of delayed payments — frequent delays are a red flag.",
+                "Normalized age of credit history — older is usually better."
+            ]
+        )
+
+        # Display chart
         st.plotly_chart(fig_radar)
+
 
         # Gauge Confidence Meter ---
         st.subheader("🎯 Confidence Gauge")
