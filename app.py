@@ -221,7 +221,7 @@ with st.form("form"):
             uniformtext_minsize=8,  # Ensure text labels are readable
             uniformtext_mode='hide',
             yaxis=dict(gridcolor='lightgray'),
-            plot_bgcolor='white'
+            plot_bgcolor='white',
             bargap=0.5
         )
 
