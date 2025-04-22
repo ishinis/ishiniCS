@@ -82,8 +82,8 @@ with st.form("form"):
     st.subheader("💳 Financial Details")
     col3, col4 = st.columns(2)
     with col3:
-        total_emi = st.number_input("Total EMI per Month (GBP)", 0, 10000, 30000)
-        outstanding_debt = st.number_input("Outstanding Debt (GBP)", 0, 10000, 30000)
+        total_emi = st.number_input("Total EMI per Month (GBP)", 0, 10000, 3000)
+        outstanding_debt = st.number_input("Outstanding Debt (GBP)", 0, 10000, 3000)
         interest_rate = st.slider("Percentage Average Interest Rate of Active Loans (%)", 0.0, 50.0, 13.5)
         monthly_balance = st.number_input("Monthly Balance After Expenses (GBP)", 0, 50, 20000)
         changed_credit_limit = st.radio("Has Credit Limit Changed Recently?", ["Yes", "No"])
