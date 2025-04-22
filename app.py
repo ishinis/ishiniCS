@@ -68,8 +68,8 @@ with st.form("form"):
     col1, col2 = st.columns(2)
     with col1:
         age = st.slider("Age", 18, 75, 30)
-        annual_income = st.number_input("Annual Income (LKR)", 50000, 5000000, 1200000)
-        salary = st.number_input("Monthly Inhand Salary", 10000, 1000000, 80000)
+        annual_income = st.number_input("Annual Income (GBP)", 10000, 500000, 30000)
+        salary = st.number_input("Monthly Inhand Salary (GBP)", 10000, 500000, 30000)
         num_accounts = st.number_input("Bank Accounts", min_value=0, max_value=15, value=3)
         credit_years = st.slider("Credit History (Years)", 0, 30, 5)
     with col2:
@@ -82,10 +82,10 @@ with st.form("form"):
     st.subheader("💳 Financial Details")
     col3, col4 = st.columns(2)
     with col3:
-        total_emi = st.number_input("Total EMI per Month", 0, 1000000, 30000)
-        outstanding_debt = st.number_input("Outstanding Debt", 0, 10000000, 500000)
+        total_emi = st.number_input("Total EMI per Month (GBP)", 0, 10000, 30000)
+        outstanding_debt = st.number_input("Outstanding Debt (GBP)", 0, 10000, 30000)
         interest_rate = st.slider("Percentage Average Interest Rate of Active Loans (%)", 0.0, 50.0, 13.5)
-        monthly_balance = st.number_input("Monthly Balance After Expenses", 0, 500000, 20000)
+        monthly_balance = st.number_input("Monthly Balance After Expenses (GBP)", 0, 50, 20000)
         changed_credit_limit = st.radio("Has Credit Limit Changed Recently?", ["Yes", "No"])
     with col4:
         payment_options = {
@@ -222,6 +222,7 @@ with st.form("form"):
             uniformtext_mode='hide',
             yaxis=dict(gridcolor='lightgray'),
             plot_bgcolor='white'
+            bargap=0.5
         )
 
         # Update traces to position text labels
