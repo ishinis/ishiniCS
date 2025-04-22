@@ -220,7 +220,7 @@ with st.form("form"):
             xaxis_title='Credit Category',
             uniformtext_minsize=8,  # Ensure text labels are readable
             uniformtext_mode='hide',
-            yaxis=dict(gridcolor='lightgray'),
+            yaxis=dict(gridcolor='darkgray'),
             plot_bgcolor='white',
             bargap = 0.5
         )
