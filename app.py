@@ -222,7 +222,7 @@ with st.form("form"):
             uniformtext_mode='hide',
             yaxis=dict(gridcolor='lightgray'),
             plot_bgcolor='white',
-            bargap=0.5
+            bargap = 0.5
         )
 
         # Update traces to position text labels
