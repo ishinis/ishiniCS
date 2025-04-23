@@ -364,20 +364,7 @@ with st.form("form"):
             summary_df = df_input.T
             summary_df.columns = ["User Input Value"] 
             summary_df.index.name = "Features"
+            st.dataframe(summary_df)
 
-            styled_df = summary_df.style.set_table_styles(
-                [
-                    {"selector": "td", "props": [("color", "black"), ("background-color", "white")]},
-                    {"selector": "th", "props": [("color", "black"), ("background-color", "white")]},
-                    {"selector": "tr", "props": [("border", "1px solid #ddd")]}
-                ]
-            ).set_properties(
-                **{
-                    "color": "black",
-                    "background-color": "white"
-                }
-            )
-
-            st.dataframe(styled_df, use_container_width=True)
 
 st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Hewa</div>", unsafe_allow_html=True)
