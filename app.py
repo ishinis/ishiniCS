@@ -262,15 +262,6 @@ with st.form("form"):
             title='📊 Financial Behavior'
         )
 
-        # Update font and axis label color to black
-        fig_radar.update_layout(
-            font=dict(color='black'),
-            polar=dict(
-            angularaxis=dict(color='black'),
-            radialaxis=dict(color='black')
-            )
-        )
-
         # Update chart with descriptive tooltips
         fig_radar.update_traces(
             hovertemplate="<b>%{theta}</b>: %{r}<br>%{customdata}",
