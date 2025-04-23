@@ -11,11 +11,10 @@ from sklearn.linear_model import LogisticRegression
 
 # --- UI Setup ---
 st.set_page_config(page_title="Credit Scoring App", layout="wide")
+st.set_page_config(page_title="Credit Scoring App", layout="wide")
 st.markdown("""
     <style>
-    body, .stApp {
-        color: black !important;
-    }
+    .stApp {  }
     .header { text-align: center; padding: 2rem 0; }
     .footer { text-align: center; font-size: small; color: #888; margin-top: 3rem; }
     .stButton > button { color: white; background-color: #1f77b4; border-radius: 8px; }
