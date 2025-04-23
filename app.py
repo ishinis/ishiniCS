@@ -11,7 +11,6 @@ from sklearn.linear_model import LogisticRegression
 
 # --- UI Setup ---
 st.set_page_config(page_title="Credit Scoring App", layout="wide")
-st.set_page_config(page_title="Credit Scoring App", layout="wide")
 st.markdown("""
     <style>
     .stApp {  }
