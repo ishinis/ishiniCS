@@ -69,7 +69,7 @@ with st.form("form"):
     with col1:
         age = st.slider("Age", 18, 75, 30)
         annual_income = st.number_input("Annual Income (GBP)", 10000, 500000, 30000)
-        salary = st.number_input("Monthly Inhand Salary (GBP)", 100, 5000, 1500)
+        salary = st.number_input("Monthly Take Home Salary (GBP)", 100, 5000, 1500)
         num_accounts = st.number_input("Bank Accounts", min_value=0, max_value=15, value=3)
         credit_years = st.slider("Credit History (Years)", 0, 30, 5)
     with col2:
