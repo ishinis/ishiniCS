@@ -362,7 +362,17 @@ with st.form("form"):
 
         with st.expander("📋 Show Input Feature Summary"):
             summary_df = df_input.T
-            summary_df.columns = ["User Input Value"]  # Assign the column name to the new DataFrame
-            st.dataframe(summary_df)  # Display the DataFrame with the assigned column name
+            summary_df.columns = ["User Input Value"] 
+            summary_df.index.name = "Features"
+
+            st.markdown("""
+                <style>
+                    .css-1d391kg {
+                        color: black !important;
+                    }
+                 </style>
+            """, unsafe_allow_html=True)
+
+            st.dataframe(summary_df) 
 
 st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Hewa</div>", unsafe_allow_html=True)
