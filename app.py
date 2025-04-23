@@ -361,6 +361,8 @@ with st.form("form"):
         st.bar_chart(feat_imp.set_index("Feature"))
 
         with st.expander("📋 Show Input Feature Summary"):
-            st.dataframe(df_input.T)
+            summary_df = df_input.T
+            summary_df.columns = ["User Input Value"]  # Assign the column name to the new DataFrame
+            st.dataframe(summary_df)  # Display the DataFrame with the assigned column name
 
 st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Hewa</div>", unsafe_allow_html=True)
