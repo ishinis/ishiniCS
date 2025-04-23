@@ -380,6 +380,4 @@ with st.form("form"):
 
             st.dataframe(styled_df, use_container_width=True)
 
-            st.dataframe(summary_df) 
-
 st.markdown("<div class='footer'>© 2025 Credit AI System | Built By Hewa</div>", unsafe_allow_html=True)
