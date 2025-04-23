@@ -320,11 +320,6 @@ with st.form("form"):
             }
         ))
 
-        fig_gauge.update_layout(
-            font=dict(color='black'),
-            title_font=dict(color='black')
-        )
-
         # Display chart and interpretation
         st.plotly_chart(fig_gauge)
         st.markdown(f"**Interpretation:** {confidence_text}")
